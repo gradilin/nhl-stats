@@ -3,11 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProductsModule } from './products/products.module';
+import { TeamsModule } from './teams/teams.module';
 
 @Module({
-  imports: [ProductsModule, 
-            ConfigModule.forRoot({
+  imports: [ConfigModule.forRoot({
               isGlobal: true,
             }),
             // using configService to pull values from .env file in order to inject connections string 
@@ -19,6 +18,7 @@ import { ProductsModule } from './products/products.module';
                 uri: configService.get<string>('MONGODB_URI'),
               }),
             }),
+            TeamsModule,
           ],
   controllers: [AppController],
   providers: [AppService],
