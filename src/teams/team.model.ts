@@ -1,8 +1,9 @@
-import { Prop, raw, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, raw, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type TeamDocument = Team & Document;
 
+@Schema()
 export class Team {
   @Prop()
   id: number;

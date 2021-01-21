@@ -1,21 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { rawTeamDto } from './dto/create-team.dto';
 import { Team, TeamDocument } from './team.model';
 
 @Injectable()
 export class TeamsService {
   constructor(
-    @InjectModel('Team') private readonly teamModel: Model<TeamDocument>,
+    @InjectModel('Team') private teamModel: Model<TeamDocument>,
   ) {}
 
-  async create(createTeamDto: rawTeamDto): Promise<Team> {
-    const createdTeam = new this.teamModel(createTeamDto);
-    return createdTeam.save();
+  async create(team: Team): Promise<Team> {
+    console.log(team);
+    const createdTeam = new this.teamModel(team);
+    const result = await createdTeam.save();
+    console.log(result);
+    return result;
   }
-
+  
   async findAll(): Promise<Team[]> {
     return this.teamModel.find().exec();
   }
+
+  // async wipeData(): Promise<string> {
+  //   const destroy = await this.teamModel.deleteMany();
+  //   return destroy;
+  // }
 }
