@@ -1,3 +1,8 @@
+export interface NHLTeamsListExport {
+  copyright : string;
+  teams: RawTeamDto[];
+}
+
 export class RawTeamDto {
   id: number;
   name: string;

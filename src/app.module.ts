@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TeamsModule } from './teams/teams.module';
+import { ScheduledTasksModule } from './scheduled-tasks/scheduled-tasks.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -18,7 +20,9 @@ import { TeamsModule } from './teams/teams.module';
                 uri: configService.get<string>('MONGODB_URI'),
               }),
             }),
+            ScheduleModule.forRoot(),
             TeamsModule,
+            ScheduledTasksModule,
           ],
   controllers: [AppController],
   providers: [AppService],

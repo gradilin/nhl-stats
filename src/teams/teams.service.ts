@@ -5,9 +5,7 @@ import { Team, TeamDocument } from './team.model';
 
 @Injectable()
 export class TeamsService {
-  constructor(
-    @InjectModel('Team') private teamModel: Model<TeamDocument>,
-  ) {}
+  constructor(@InjectModel('Team') private teamModel: Model<TeamDocument>) {}
 
   async create(team: Team): Promise<Team> {
     console.log(team);
@@ -16,9 +14,13 @@ export class TeamsService {
     console.log(result);
     return result;
   }
-  
+
   async findAll(): Promise<Team[]> {
     return this.teamModel.find().exec();
+  }
+
+  async findByTeamId(teamId: number): Promise<Team[]> {
+    return this, this.teamModel.find({ id: teamId });
   }
 
   // async wipeData(): Promise<string> {
