@@ -8,10 +8,10 @@ export class NHLAPIService {
   private readonly logger = new Logger(NHLAPIService.name);
 
   //   async getAllTeams() : Promise<Observable<AxiosResponse<NHLTeamsListExport>>> {
-  async getAllTeams(): Promise<RawTeamDto> {
+  async getAllTeams(): Promise<RawTeamDto[]> {
     const response = await this.httpService
       .get('https://statsapi.web.nhl.com/api/v1/teams')
-      .toPromise();
+      .toPromise()
     return response.data?.teams;
   }
 }

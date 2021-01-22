@@ -23,6 +23,15 @@ export class TeamsService {
     return this, this.teamModel.find({ id: teamId });
   }
 
+  async upsertTeamById(team: Team): Promise<Team> {
+    const filter = { id: team.id };
+    const upsertedTeam = this.teamModel.findOneAndUpdate(filter, team, {
+      new: true,
+      upsert: true // Make this update into an upsert
+    });
+    return upsertedTeam;
+  }
+
   // async wipeData(): Promise<string> {
   //   const destroy = await this.teamModel.deleteMany();
   //   return destroy;

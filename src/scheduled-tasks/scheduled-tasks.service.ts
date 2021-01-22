@@ -1,24 +1,36 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, Timeout } from '@nestjs/schedule';
 import { RawTeamDto } from 'src/teams/dto/raw-team.dto';
+import { TeamsService } from 'src/teams/teams.service';
 import { NHLAPIService } from './nhl-api.service';
 
 @Injectable()
 export class ScheduledTasksService {
-  constructor(private nhlAPIService: NHLAPIService) {}
+  constructor(
+    private nhlAPIService: NHLAPIService,
+    private teamsService: TeamsService,
+  ) {}
   private readonly logger = new Logger(ScheduledTasksService.name);
 
-  //   @Cron('15 * * * * *')
-  //   handleCron() {
-  //     this.logger.debug('Fuck ya dude climb on in');
-  //   }
-
-  @Cron('* * * * * 1')
+  // @Cron('* * * * * 1')
+  @Timeout(5000)
   async updateTeams() {
-    const OfficialTeams: RawTeamDto[] = await this.nhlAPIService
+    let teamArray: RawTeamDto[] = [];
+    await this.nhlAPIService
       .getAllTeams()
-      .then((res: RawTeamDto[]) => {});
-
-      /// need to lear more abput promises vs observalbes 
+      // need to convert Promis into object  
+      .then(res => {
+        teamArray = res;
+        teamArray.forEach(team => {
+          const serviceReturn = this.teamsService.upsertTeamById(team);
+          // loggin in case something goes wrong
+          serviceReturn.catch(error => {
+            console.log('DB Upsert rejected with ' + JSON.stringify(error));
+          });
+        });
+      })
+      .catch(error => {
+        console.log('Promise rejected with ' + JSON.stringify(error));
+      });
   }
 }

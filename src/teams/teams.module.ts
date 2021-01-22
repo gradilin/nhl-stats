@@ -8,5 +8,6 @@ import { TeamsService } from './teams.service';
   imports: [MongooseModule.forFeature([{ name: 'Team', schema: TeamSchema }]), HttpModule],
   controllers: [TeamsController],
   providers: [TeamsService],
+  exports: [TeamsService]
 })
 export class TeamsModule {}
