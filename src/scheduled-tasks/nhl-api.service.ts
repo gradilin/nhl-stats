@@ -1,4 +1,5 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common';
+import { CreateGameDTO } from 'src/games/dto/create-game.dto';
 import { RawTeamDto } from 'src/teams/dto/raw-team.dto';
 
 @Injectable()
@@ -11,6 +12,13 @@ export class NHLAPIService {
   async getAllTeams(): Promise<RawTeamDto[]> {
     const response = await this.httpService
       .get('https://statsapi.web.nhl.com/api/v1/teams')
+      .toPromise()
+    return response.data?.teams;
+  }
+
+  async getDailySchedule(): Promise<CreateGameDTO[]> {
+    const response = await this.httpService
+      .get('https://statsapi.web.nhl.com/api/v1/schedule')
       .toPromise()
     return response.data?.teams;
   }
