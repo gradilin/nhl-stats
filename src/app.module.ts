@@ -6,7 +6,6 @@ import { AppService } from './app.service';
 import { TeamsModule } from './teams/teams.module';
 import { ScheduledTasksModule } from './scheduled-tasks/scheduled-tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { GameModule } from './game/game.module';
 import { GamesModule } from './games/games.module';
 
 @Module({
@@ -27,7 +26,6 @@ import { GamesModule } from './games/games.module';
     ScheduleModule.forRoot(),
     TeamsModule,
     ScheduledTasksModule,
-    GameModule,
     GamesModule,
   ],
   controllers: [AppController],
