@@ -19,7 +19,9 @@ export class TeamsService {
   }
 
   async findByTeamId(teamId: number): Promise<Team> {
-    return this.teamModel.findOne({ id: teamId });
+    console.log(teamId);
+ 
+    return this.teamModel.findOne({ teamPk: teamId });
   }
 
   async upsertTeamById(team: Team): Promise<Team> {

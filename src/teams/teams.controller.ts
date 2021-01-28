@@ -1,3 +1,4 @@
+import { Param } from '@nestjs/common';
 import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { RawTeamDto } from './dto/raw-team.dto';
@@ -8,9 +9,17 @@ import { TeamsService } from './teams.service';
 export class TeamsController {
   constructor(private teamsService: TeamsService) {}
 
-  @Get()
-  async returnTeams(): Promise<Team[]> {
-    return await this.teamsService.findAll();
+  // @Get()
+  // async returnTeams(): Promise<Team[]> {
+  //   return await this.teamsService.findAll();
+  // }
+
+  @Get(':id')
+  async returnTeamById(@Param('id') teamId: number): Promise<Team> {
+    console.log(teamId);
+    const q = await this.teamsService.findByTeamId(teamId); 
+    console.log(q);
+    return q;
   }
 
   @Post()
