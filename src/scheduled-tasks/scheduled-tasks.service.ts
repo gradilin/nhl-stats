@@ -22,7 +22,8 @@ export class ScheduledTasksService {
       .then(res => {
         teamArray = res;
         teamArray.forEach(team => {
-          const serviceReturn = this.teamsService.upsertTeamById(team);
+          const teamDoc = this.teamsService.convertTeamDtoToTeam(team);
+          const serviceReturn = this.teamsService.upsertTeamById(teamDoc);
           // loggin in case something goes wrong
           serviceReturn.catch(error => {
             console.log('DB Upsert rejected with ' + JSON.stringify(error));

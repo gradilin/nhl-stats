@@ -15,45 +15,14 @@ export class TeamsController {
 
   @Post()
   async CreateTeam(@Body() rawTeam: RawTeamDto): Promise<Team> {
-    const {
-      id,
-      name,
-      link,
-      abbreviation,
-      teamName,
-      locationName,
-      firstYearOfPlay,
-      division,
-      conference,
-      franchise,
-      shortName,
-      officialSiteUrl,
-      franchiseId,
-      active,
-    } = rawTeam;
-    // console.log(rawTeam);
-    const team: Team = {
-      id,
-      name,
-      link,
-      abbreviation,
-      teamName,
-      locationName,
-      firstYearOfPlay,
-      division,
-      conference,
-      franchise,
-      shortName,
-      officialSiteUrl,
-      franchiseId,
-      active,
-    };
-    // console.log(team);
-    return await this.teamsService.create(team);
+    const teamObject = this.teamsService.convertTeamDtoToTeam(rawTeam);
+    const result =  await this.teamsService.create(teamObject);
+    console.log(result);
+    return result;
+
   }
 
-
-  // @Delete() 
+  // @Delete()
   // async DeleteAll() {
   //   this.teamsService.wipeData();
   //   return "not just the teams, the woteams and the chilteams too"

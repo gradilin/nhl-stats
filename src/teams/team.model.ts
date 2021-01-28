@@ -6,18 +6,18 @@ export type TeamDocument = Team & Document;
 @Schema()
 export class Team {
   @Prop()
-  id: number;
-  @Prop()
+  teamPk: number;
+  @Prop({ unique: true, required: true })
   name: string;
-  @Prop()
+  @Prop({ required: true })
   link: string;
-  @Prop()
+  @Prop({ required: true })
   abbreviation: string;
-  @Prop()
+  @Prop({ required: true })
   teamName: string;
-  @Prop()
+  @Prop({ required: true })
   locationName: string;
-  @Prop()
+  @Prop({ required: true })
   firstYearOfPlay: string;
   @Prop(
     raw({
@@ -43,13 +43,13 @@ export class Team {
     }),
   )
   franchise: Record<string, any>;
-  @Prop()
+  @Prop({ required: true })
   shortName: string;
   @Prop()
   officialSiteUrl: string;
-  @Prop()
+  @Prop({ required: true })
   franchiseId: number;
-  @Prop()
+  @Prop({ required: true })
   active: boolean;
 }
 

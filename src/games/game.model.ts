@@ -8,13 +8,13 @@ export type GameDocument = Game & Document;
 @Schema()
 export class Game {
   @Prop()
-  gamePK: number;
+  gamePk: number;
   @Prop()
   link: string;
   @Prop()
   gameType: string;
   @Prop()
-  season: number;
+  season: string;
   @Prop()
   gameDate: Date;
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Team' })
