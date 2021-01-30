@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, Timeout } from '@nestjs/schedule';
+import { Timeout } from '@nestjs/schedule';
+import { RawGameDTO } from 'src/games/dto/raw-game-dto';
+import { GamesService } from 'src/games/games.service';
 import { RawTeamDto } from 'src/teams/dto/raw-team.dto';
 import { TeamsService } from 'src/teams/teams.service';
 import { NHLAPIService } from './nhl-api.service';
@@ -9,16 +11,17 @@ export class ScheduledTasksService {
   constructor(
     private nhlAPIService: NHLAPIService,
     private teamsService: TeamsService,
+    private gamesService: GamesService,
   ) {}
   private readonly logger = new Logger(ScheduledTasksService.name);
 
   // @Cron('* * * * * 1')
-  @Timeout(5000)
+  @Timeout(30000)
   async updateTeams() {
     let teamArray: RawTeamDto[] = [];
     await this.nhlAPIService
       .getAllTeams()
-      // need to convert Promis into object  
+      // need to convert Promis into object
       .then(res => {
         teamArray = res;
         teamArray.forEach(team => {
@@ -33,5 +36,18 @@ export class ScheduledTasksService {
       .catch(error => {
         console.log('Promise rejected with ' + JSON.stringify(error));
       });
+  }
+
+  @Timeout(5000)
+  async updateOldGames() {
+    const today = new Date();
+    await this.nhlAPIService.getGameSchedule(today).then(res => {
+      res.dates.forEach(date => {
+        date.games.forEach(game => {
+          const createGame = this.gamesService.convertDtoToGame(game, date.date);
+
+        });
+      });
+    });
   }
 }

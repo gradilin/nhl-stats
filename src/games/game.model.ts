@@ -43,6 +43,8 @@ export class Game {
     }),
   )
   awayRecord: Record<string, any>;
+  @Prop()
+  venue: string;
 }
 
 export const GameSchema = SchemaFactory.createForClass(Game);

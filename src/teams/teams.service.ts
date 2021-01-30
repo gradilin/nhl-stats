@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { RawTeamDto } from './dto/raw-team.dto';
 import { Team, TeamDocument } from './team.model';
 
@@ -19,9 +19,11 @@ export class TeamsService {
   }
 
   async findByTeamId(teamId: number): Promise<Team> {
-    console.log(teamId);
- 
     return this.teamModel.findOne({ teamPk: teamId });
+  }
+
+  async getTeamObjectIdByTeamId(teamId: number): Promise<ObjectId> {
+    return (await this.teamModel.findOne({ teamPk: teamId }))._id;
   }
 
   async upsertTeamById(team: Team): Promise<Team> {

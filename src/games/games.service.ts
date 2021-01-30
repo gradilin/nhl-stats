@@ -10,35 +10,40 @@ import { Game, GameDocument } from './game.model';
 export class GamesService {
   constructor(@InjectModel('Game') private gameModel: Model<GameDocument>, private readonly teamsService: TeamsService) {}
 
-  // async convertDtoToGame(gameDto: RawGameDTO): Promise<CreateGameDto> {
-  //   const {
-  //     link,
-  //     gameType,
-  //     season,
-  //     gameDate,
-  //   } = gameDto;
-  //   const homeScore =  gameDto.teams.home.score;
-  //   const awayScore =  gameDto.teams.away.score;
-  //   const homeRecord = gameDto.teams.home.leagueRecord;
-  //   const awayRecord = gameDto.teams.away.leagueRecord;
-  //   const homeTeam = await this.teamsService.findByTeamId(gameDto.teams.home.team.id);
-  //   const awayTeam = await this.teamsService.findByTeamId(gameDto.teams.away.team.id);
-  //   const gamePk = gameDto.gamePk;
-  //   const game: CreateGameDto = {
-  //     gamePk,
-  //     link,
-  //     gameType,
-  //     season,
-  //     gameDate, 
-  //     homeScore,
-  //     awayScore, 
-  //     homeRecord,
-  //     awayRecord, 
-  //     homeTeam,
-  //     awayTeam,
-  //   }
-  //   return game;
-  // }
+  async convertDtoToGame(rawGameDto: RawGameDTO, gameDateString: string): Promise<CreateGameDto> {
+    const {
+      link,
+      gameType,
+      season,
+    } = rawGameDto;
+    const homeScore =  rawGameDto.teams.home.score;
+    const awayScore =  rawGameDto.teams.away.score;
+    const homeRecord = rawGameDto.teams.home.leagueRecord;
+    const awayRecord = rawGameDto.teams.away.leagueRecord;
+    const homeTeam = await this.teamsService.getTeamObjectIdByTeamId(rawGameDto.teams.home.team.id);
+    const awayTeam = await this.teamsService.getTeamObjectIdByTeamId(rawGameDto.teams.away.team.id);
+    const gamePk = rawGameDto.gamePk;
+    const venue = rawGameDto.venue.name;
+    const gameDate = new Date(gameDateString);
+    const game: CreateGameDto = {
+      gamePk,
+      link,
+      gameType,
+      season,
+      gameDate, 
+      homeScore,
+      awayScore, 
+      homeRecord,
+      awayRecord, 
+      homeTeam,
+      awayTeam,
+      venue
+    }
+    return game;
+  }
+
+  
+
 
   async findGameByGameId(id: number): Promise<Game[]> {
     const game = this.gameModel.find({ gamePk: id });
@@ -50,5 +55,15 @@ export class GamesService {
     const createdGame = new this.gameModel(game);
     const result = await createdGame.save();
     return result;
+  }
+
+  async upsertGameById(game: CreateGameDto): Promise<Game> {
+
+    const filter = { gamePk: game.gamePk };
+    const upsertedTeam = this.gameModel.findOneAndUpdate(filter, game, {
+      new: true,
+      upsert: true, // Make this update into an upsert
+    });
+    return upsertedTeam;
   }
 }

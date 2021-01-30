@@ -13,4 +13,5 @@ export class CreateGameDto {
   awayTeam: ObjectId;
   awayScore: number;
   awayRecord: LeagueRecord;
+  venue: string;
 }

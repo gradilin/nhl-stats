@@ -16,7 +16,6 @@ export class TeamsController {
 
   @Get(':id')
   async returnTeamById(@Param('id') teamId: number): Promise<Team> {
-    console.log(teamId);
     const q = await this.teamsService.findByTeamId(teamId); 
     console.log(q);
     return q;
@@ -26,10 +25,10 @@ export class TeamsController {
   async CreateTeam(@Body() rawTeam: RawTeamDto): Promise<Team> {
     const teamObject = this.teamsService.convertTeamDtoToTeam(rawTeam);
     const result =  await this.teamsService.create(teamObject);
-    console.log(result);
     return result;
-
   }
+
+  
 
   // @Delete()
   // async DeleteAll() {
