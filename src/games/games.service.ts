@@ -42,9 +42,6 @@ export class GamesService {
     return game;
   }
 
-  
-
-
   async findGameByGameId(id: number): Promise<Game[]> {
     const game = this.gameModel.find({ gamePk: id });
     return game;

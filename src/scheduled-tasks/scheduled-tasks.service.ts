@@ -45,6 +45,7 @@ export class ScheduledTasksService {
         date.games.forEach(game => {
           const createGame = this.gamesService.convertDtoToGame(game, date.date);
 
+          
         });
       });
     });
