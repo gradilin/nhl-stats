@@ -7,17 +7,17 @@ export type TeamDocument = Team & Document;
 export class Team {
   @Prop()
   teamPk: number;
-  @Prop({ unique: true, required: true })
+  @Prop()
   name: string;
-  @Prop({ required: true })
+  @Prop()
   link: string;
-  @Prop({ required: true })
+  @Prop()
   abbreviation: string;
-  @Prop({ required: true })
+  @Prop()
   teamName: string;
-  @Prop({ required: true })
+  @Prop()
   locationName: string;
-  @Prop({ required: true })
+  @Prop()
   firstYearOfPlay: string;
   @Prop(
     raw({
@@ -43,13 +43,13 @@ export class Team {
     }),
   )
   franchise: Record<string, any>;
-  @Prop({ required: true })
+  @Prop()
   shortName: string;
   @Prop()
   officialSiteUrl: string;
-  @Prop({ required: true })
+  @Prop()
   franchiseId: number;
-  @Prop({ required: true })
+  @Prop()
   active: boolean;
 }
 

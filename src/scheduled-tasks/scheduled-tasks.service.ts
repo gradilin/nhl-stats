@@ -39,15 +39,25 @@ export class ScheduledTasksService {
 
   @Timeout(5000)
   async updateOldGames() {
-    const today = new Date();
-    await this.nhlAPIService.getGameSchedule(today).then(res => {
-      res.dates.forEach(date => {
-        date.games.forEach(game => {
-          const createGame = this.gamesService.convertDtoToGame(game, date.date);
+    const gameDate = new Date();
 
-          
+    // look back thorugh the previous ten days
+    for (let _i = 0; _i < 10; _i++) {
+      gameDate.setDate(gameDate.getDate() - _i);
+      await this.nhlAPIService.getGameSchedule(gameDate).then(res => {
+        res.dates.forEach(date => {
+          date.games.forEach(game => {
+            this.gamesService
+              .convertDtoToGame(game, date.date)
+              .then(res => {
+                this.gamesService.createGame(res);
+              })
+              .catch(error => {
+                console.log('Promise rejected with ' + JSON.stringify(error));
+              });
+          });
         });
       });
-    });
+    }
   }
 }

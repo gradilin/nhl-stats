@@ -8,20 +8,26 @@ import { Game, GameDocument } from './game.model';
 
 @Injectable()
 export class GamesService {
-  constructor(@InjectModel('Game') private gameModel: Model<GameDocument>, private readonly teamsService: TeamsService) {}
+  constructor(
+    @InjectModel('Game') private gameModel: Model<GameDocument>,
+    private readonly teamsService: TeamsService,
+  ) {}
 
-  async convertDtoToGame(rawGameDto: RawGameDTO, gameDateString: string): Promise<CreateGameDto> {
-    const {
-      link,
-      gameType,
-      season,
-    } = rawGameDto;
-    const homeScore =  rawGameDto.teams.home.score;
-    const awayScore =  rawGameDto.teams.away.score;
+  async convertDtoToGame(
+    rawGameDto: RawGameDTO,
+    gameDateString: string,
+  ): Promise<CreateGameDto> {
+    const { link, gameType, season } = rawGameDto;
+    const homeScore = rawGameDto.teams.home.score;
+    const awayScore = rawGameDto.teams.away.score;
     const homeRecord = rawGameDto.teams.home.leagueRecord;
     const awayRecord = rawGameDto.teams.away.leagueRecord;
-    const homeTeam = await this.teamsService.getTeamObjectIdByTeamId(rawGameDto.teams.home.team.id);
-    const awayTeam = await this.teamsService.getTeamObjectIdByTeamId(rawGameDto.teams.away.team.id);
+    const homeTeam = await this.teamsService.getTeamObjectIdByTeamId(
+      rawGameDto.teams.home.team.id,
+    );
+    const awayTeam = await this.teamsService.getTeamObjectIdByTeamId(
+      rawGameDto.teams.away.team.id,
+    );
     const gamePk = rawGameDto.gamePk;
     const venue = rawGameDto.venue.name;
     const gameDate = new Date(gameDateString);
@@ -30,16 +36,22 @@ export class GamesService {
       link,
       gameType,
       season,
-      gameDate, 
+      gameDate,
       homeScore,
-      awayScore, 
+      awayScore,
       homeRecord,
-      awayRecord, 
+      awayRecord,
       homeTeam,
       awayTeam,
-      venue
-    }
+      venue,
+    };
     return game;
+  }
+
+  async getOldestGameByDate(): Promise<Game> {
+    // sorts the games by date - oldest to newest then takes the top result
+    const result = this.gameModel.findOne({}, {}, { sort: { gameDate: 1 } });
+    return result;
   }
 
   async findGameByGameId(id: number): Promise<Game[]> {
@@ -47,16 +59,18 @@ export class GamesService {
     return game;
   }
 
-  async createGame(game: Game): Promise<Game> {
+  async createGame(game: CreateGameDto): Promise<Game> {
     console.log(game);
     const createdGame = new this.gameModel(game);
     const result = await createdGame.save();
     return result;
   }
 
-  async upsertGameById(game: CreateGameDto): Promise<Game> {
+  async upsertGameById(game: Game): Promise<Game> {
+    console.log(game.gamePk);
 
     const filter = { gamePk: game.gamePk };
+    
     const upsertedTeam = this.gameModel.findOneAndUpdate(filter, game, {
       new: true,
       upsert: true, // Make this update into an upsert

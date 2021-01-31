@@ -1,6 +1,5 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import * as mongoose from 'mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type GameDocument = Game & Document;
 
@@ -16,8 +15,8 @@ export class Game {
   season: string;
   @Prop()
   gameDate: Date;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Team' })
-  homeTeam: mongoose.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Team' })
+  homeTeam: Types.ObjectId;
   @Prop()
   homeScore: number;
   @Prop(
@@ -29,8 +28,8 @@ export class Game {
     }),
   )
   homeRecord: Record<string, any>;
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Team' })
-  awayTeam: mongoose.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Team' })
+  awayTeam: Types.ObjectId;
   @Prop()
   awayScore: number;
   @Prop(
