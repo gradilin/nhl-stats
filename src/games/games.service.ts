@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { TeamsService } from 'src/teams/teams.service';
-import { CreateGameDto } from './dto/create-game.dto';
 import { RawGameDTO } from './dto/raw-game-dto';
 import { Game, GameDocument } from './game.model';
 
@@ -13,10 +12,14 @@ export class GamesService {
     private readonly teamsService: TeamsService,
   ) {}
 
+  async getGameObjectIdByTeamId(gameId: number): Promise<ObjectId> {
+    return (await this.gameModel.findOne({ gamePk: gameId }))._id;
+  }
+
   async convertDtoToGame(
     rawGameDto: RawGameDTO,
     gameDateString: string,
-  ): Promise<CreateGameDto> {
+  ): Promise<Game> {
     const { link, gameType, season } = rawGameDto;
     const homeScore = rawGameDto.teams.home.score;
     const awayScore = rawGameDto.teams.away.score;
@@ -31,7 +34,7 @@ export class GamesService {
     const gamePk = rawGameDto.gamePk;
     const venue = rawGameDto.venue.name;
     const gameDate = new Date(gameDateString);
-    const game: CreateGameDto = {
+    const game: Game = {
       gamePk,
       link,
       gameType,
@@ -59,15 +62,21 @@ export class GamesService {
     return game;
   }
 
-  async createGame(game: CreateGameDto): Promise<Game> {
-    console.log(game);
+  async createGame(game: Game): Promise<Game> {
     const createdGame = new this.gameModel(game);
-    const result = await createdGame.save();
-    return result;
+    console.log(createdGame);
+    try {
+      const result = await createdGame.save();
+      return result;
+    }
+    catch (error) {
+      console.log(error);
+      return game;
+    }
   }
 
   async upsertGameById(game: Game): Promise<Game> {
-    console.log(game.gamePk);
+    console.log(game);
 
     const filter = { gamePk: game.gamePk };
     

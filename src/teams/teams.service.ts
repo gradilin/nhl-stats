@@ -6,7 +6,10 @@ import { Team, TeamDocument } from './team.model';
 
 @Injectable()
 export class TeamsService {
-  constructor(@InjectModel('Team') private teamModel: Model<TeamDocument>) {}
+  constructor(
+    
+    @InjectModel('Team') private teamModel: Model<TeamDocument>
+  ) {}
 
   async create(team: Team): Promise<Team> {
     const createdTeam = new this.teamModel(team);

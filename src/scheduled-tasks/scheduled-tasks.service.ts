@@ -50,7 +50,7 @@ export class ScheduledTasksService {
             this.gamesService
               .convertDtoToGame(game, date.date)
               .then(res => {
-                this.gamesService.createGame(res);
+                this.gamesService.upsertGameById(res);
               })
               .catch(error => {
                 console.log('Promise rejected with ' + JSON.stringify(error));
