@@ -1,45 +1,61 @@
-import { ScheduledTasksService } from "src/scheduled-tasks/scheduled-tasks.service";
+import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
+export type PlayerDocument = Player & Document;
 
-
+@Schema()
 export class Player {
-
-    
-    id: number;
-    fullName: string;
-    link: string;
-    firstName: string;
-    lastName: string;
-    primaryNumber: string;
-    birthDate: string;
-    currentAge: number;
-    birthCity: string;
-    birthStateProvince: string;
-    birthCountry: string;
-    nationality: string;
-    height: string;
-    weight: number;
-    active: boolean;
-    alternateCaptain: boolean;
-    captain: boolean;
-    rookie: boolean;
-    shootsCatches: string;
-    rosterStatus: string;
-    currentTeam: CurrentTeam;
-    primaryPosition: PrimaryPosition;
-    
-    export interface CurrentTeam {
-        id: number;
-        name: string;
-        link: string;
-    }
-
-    export interface PrimaryPosition {
-        code: string;
-        name: string;
-        type: string;
-        abbreviation: string;
-    }
-
+  @Prop()
+  playerPk: number;
+  @Prop()
+  fullName: string;
+  @Prop()
+  link: string;
+  @Prop()
+  firstName: string;
+  @Prop()
+  lastName: string;
+  @Prop()
+  primaryNumber: string;
+  @Prop()
+  birthDate: string;
+  @Prop()
+  currentAge: number;
+  @Prop()
+  birthCity: string;
+  @Prop()
+  birthStateProvince: string;
+  @Prop()
+  birthCountry: string;
+  @Prop()
+  nationality: string;
+  @Prop()
+  height: string;
+  @Prop()
+  weight: number;
+  @Prop()
+  active: boolean;
+  @Prop()
+  alternateCaptain: boolean;
+  @Prop()
+  captain: boolean;
+  @Prop()
+  rookie: boolean;
+  @Prop()
+  shootsCatches: string;
+  @Prop()
+  rosterStatus: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Team' })
+  currentTeam: MongooseSchema.Types.ObjectId;
+  @Prop(
+    raw({
+      code: { type: String },
+      name: { type: String },
+      type: { type: String },
+      abbreviation: { type: String },
+    }),
+  )
+  primaryPosition: Record<string, any>;
 }
 
+export const PlayerSchema = SchemaFactory.createForClass(Player);
