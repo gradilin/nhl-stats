@@ -1,5 +1,5 @@
 export interface NHLTeamsListExport {
-  copyright : string;
+  copyright: string;
   teams: RawTeamDto[];
 }
 
@@ -19,6 +19,7 @@ export class RawTeamDto {
   officialSiteUrl: string;
   franchiseId: number;
   active: boolean;
+  roster: Roster;
 }
 
 export interface TimeZone {
@@ -50,4 +51,28 @@ export interface Venue {
   link: string;
   city: string;
   timeZone: TimeZone;
+}
+
+export interface Roster {
+  roster: RosterPlayers[];
+  link: string;
+}
+
+export interface RosterPlayers {
+  person: Person;
+  jerseyNumber: string;
+  position: Position;
+}
+
+export interface Person {
+  id: number;
+  fullName: string;
+  link: string;
+}
+
+export interface Position {
+  code: string;
+  name: string;
+  type: string;
+  abbreviation: string;
 }
