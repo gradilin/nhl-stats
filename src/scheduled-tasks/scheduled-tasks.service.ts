@@ -64,11 +64,11 @@ export class ScheduledTasksService {
   }
 
   @Timeout(1000)
-  async updateActiveROsterPlayers() {
+  async updateActiveRosterPlayers() {
     const teams = await this.teamsService.findAll();
     const Roster: RosterPlayers[] = [];
     // cycle through each team in the db
-    teams.forEach(team => {
+    await teams.forEach(team => {
       // foreach team get full roster and add their data to the rosterplayer array
       this.nhlAPIService
         .getTeamRoster(team.teamPk)
@@ -82,10 +82,12 @@ export class ScheduledTasksService {
         });
     });
 
+    console.log(Roster);
     Roster.forEach(player => {
       this.nhlAPIService
         .getSinglePlayerData(player.person.id)
         .then(rawPlayer => {
+          console.log(rawPlayer);
           this.playerService.upsertPlayerById(rawPlayer);
         })
         .catch(error => {

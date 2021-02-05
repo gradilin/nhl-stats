@@ -29,7 +29,7 @@ export class NHLAPIService {
   async getTeamRoster(teamId: number): Promise<RawTeamDto> {
     const response = await this.httpService
       .get(
-        `https://statsapi.web.nhl.com/api/v1/${teamId}/teams?expand=team.roster`,
+        `https://statsapi.web.nhl.com/api/v1/teams/${teamId}?expand=team.roster`,
       )
       .toPromise();
     // since we only want the single team roster we can ensure that this will be the only team returned
