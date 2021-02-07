@@ -1,7 +1,6 @@
 import { HttpService, Injectable, Logger } from '@nestjs/common';
 import { GameDate } from 'src/games/dto/raw-game-dto';
 import { RawPlayerDto } from 'src/players/dto/create-player.dto';
-import { Player } from 'src/players/player.model';
 import { RawTeamDto } from 'src/teams/dto/raw-team.dto';
 
 @Injectable()

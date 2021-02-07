@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Timeout } from '@nestjs/schedule';
 import { GamesService } from 'src/games/games.service';
 import { PlayersService } from 'src/players/players.service';
-import { RawTeamDto, RosterPlayers } from 'src/teams/dto/raw-team.dto';
+import { RawTeamDto } from 'src/teams/dto/raw-team.dto';
 import { TeamsService } from 'src/teams/teams.service';
 import { NHLAPIService } from './nhl-api.service';
 
@@ -66,7 +66,6 @@ export class ScheduledTasksService {
   @Timeout(1000)
   async updateActiveRosterPlayers() {
     const teams = await this.teamsService.findAll();
-    const Roster: RosterPlayers[] = [];
     // cycle through each team in the db
     await teams.forEach(team => {
       // foreach team get full roster and add their data to the rosterplayer array
@@ -74,21 +73,15 @@ export class ScheduledTasksService {
         .getTeamRoster(team.teamPk)
         .then(teamFull => {
           teamFull.roster.roster.forEach(player => {
-            Roster.push(player);
+            this.nhlAPIService
+              .getSinglePlayerData(player.person.id)
+              .then(rawPlayer => {
+                this.playerService.CreatePlayer(rawPlayer);
+              })
+              .catch(error => {
+                console.log('Promise rejected with ' + JSON.stringify(error));
+              });
           });
-        })
-        .catch(error => {
-          console.log('Promise rejected with ' + JSON.stringify(error));
-        });
-    });
-
-    console.log(Roster);
-    Roster.forEach(player => {
-      this.nhlAPIService
-        .getSinglePlayerData(player.person.id)
-        .then(rawPlayer => {
-          console.log(rawPlayer);
-          this.playerService.upsertPlayerById(rawPlayer);
         })
         .catch(error => {
           console.log('Promise rejected with ' + JSON.stringify(error));
