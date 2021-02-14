@@ -75,22 +75,15 @@ export class GamesService {
     }
   }
 
-  @UseFilters(MongoExceptionFilter)
-  // async upsertGameById(game: Game): Promise<Game> {
-  async upsertGameById(game: Game) {
+  async upsertGameById(game: Game): Promise<Game> {
     const filter = { gamePk: game.gamePk };
-
-    // console.log(filter);
-    // console.log(game);
 
     const upsertedTeam = this.gameModel
       .findOneAndUpdate(filter, game, {
         new: true,
         upsert: true, // Make this update into an upsert
-      })
-      .catch(error => {
-        console.log(error);
       });
+
     return upsertedTeam;
   }
 }
