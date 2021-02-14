@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseFilters } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { MongoExceptionFilter } from 'src/mongo.exception.filter';
 import { TeamsService } from 'src/teams/teams.service';
 import { RawGameDTO } from './dto/raw-game-dto';
 import { Game, GameDocument } from './game.model';
@@ -68,22 +69,28 @@ export class GamesService {
     try {
       const result = await createdGame.save();
       return result;
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       return game;
     }
   }
 
-  async upsertGameById(game: Game): Promise<Game> {
-    console.log(game);
-
+  @UseFilters(MongoExceptionFilter)
+  // async upsertGameById(game: Game): Promise<Game> {
+  async upsertGameById(game: Game) {
     const filter = { gamePk: game.gamePk };
-    
-    const upsertedTeam = this.gameModel.findOneAndUpdate(filter, game, {
-      new: true,
-      upsert: true, // Make this update into an upsert
-    });
+
+    // console.log(filter);
+    // console.log(game);
+
+    const upsertedTeam = this.gameModel
+      .findOneAndUpdate(filter, game, {
+        new: true,
+        upsert: true, // Make this update into an upsert
+      })
+      .catch(error => {
+        console.log(error);
+      });
     return upsertedTeam;
   }
 }

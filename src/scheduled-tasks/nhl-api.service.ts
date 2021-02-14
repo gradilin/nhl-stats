@@ -43,7 +43,8 @@ export class NHLAPIService {
   }
 
   async getGameSchedule(date: Date): Promise<GameDate> {
-    const prevDateString = this.formatDate(this.SubtractDayFromDate(date));
+    const prevDateString = this.formatDate(date);
+    console.log(prevDateString);
     const endpoint = `https://statsapi.web.nhl.com/api/v1/schedule?startDate=${prevDateString}&endDate=${prevDateString}`;
     const response = await this.httpService.get(endpoint).toPromise();
     return response.data;
@@ -61,11 +62,5 @@ export class NHLAPIService {
       day = '0' + day;
     }
     return [year, month, day].join('-');
-  }
-
-  SubtractDayFromDate(currentDay: Date): Date {
-    const previousDay = new Date();
-    previousDay.setDate(currentDay.getDate() - 1);
-    return previousDay;
   }
 }
