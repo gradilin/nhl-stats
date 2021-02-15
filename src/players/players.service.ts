@@ -12,6 +12,14 @@ export class PlayersService {
     private teamsService: TeamsService,
   ) {}
 
+  async findPlayerById(playerPk: number): Promise<Player> {
+    const player = await this.playerModel
+      .findOne({ playerPk: playerPk })
+      .populate('currentTeam');
+    
+    return player;
+  }
+
   async FindAllPlayers(): Promise<Player[]> {
     const players = await this.playerModel.find();
     return players;
@@ -31,12 +39,11 @@ export class PlayersService {
 
   async upsertPlayerById(rawPlayerDto: RawPlayerDto) {
     const player = await this.convertRawPlayerToPlayerDoc(rawPlayerDto);
-    const filter = { playerPk: rawPlayerDto.id };
+    const filter = { playerPk: player.playerPk };
     const result = this.playerModel.findOneAndUpdate(filter, player, {
       new: true,
       upsert: true,
     });
-    console.log(result);
     return result;
   }
 
@@ -65,7 +72,7 @@ export class PlayersService {
 
     const playerPk = rawPlayer.id;
     const primaryPosition = rawPlayer.primaryPosition;
-    const currentTeam = await this.teamsService.getTeamObjectIdByTeamId(
+    const currentTeam = await this.teamsService.findByTeamId(
       rawPlayer.currentTeam.id,
     );
 
@@ -94,5 +101,10 @@ export class PlayersService {
       currentTeam,
     };
     return player;
+  }
+
+  async wipeData(): Promise<string> {
+    const destroy = await this.playerModel.deleteMany();
+    return destroy;
   }
 }

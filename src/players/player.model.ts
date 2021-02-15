@@ -1,5 +1,6 @@
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Team } from 'src/teams/team.model';
 
 export type PlayerDocument = Player & Document;
 
@@ -46,7 +47,7 @@ export class Player {
   @Prop()
   rosterStatus: string;
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Team' })
-  currentTeam: MongooseSchema.Types.ObjectId;
+  currentTeam: Team;
   @Prop(
     raw({
       code: { type: String },
